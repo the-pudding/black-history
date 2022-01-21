@@ -8,8 +8,10 @@
   roles our story of American history.
 </p>
 <p>
-  These are the Black people whose names appear in the top 15 textbooks in Texas, sized by the
-  number of mentions.
+  These are the Black people <a
+    href="https://journals.sagepub.com/doi/full/10.1177/2332858420940312"
+    >whose names appear in the top 15 textbooks in Texas</a
+  >, sized by the number of mentions.
 </p>
 <img src="assets/chart1.png" />
 <p>
