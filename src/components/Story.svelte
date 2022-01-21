@@ -1,5 +1,8 @@
 <script>
   import allNames from "$data/allNames.csv";
+  import { interpolateTransformSvg } from "d3";
+
+  export let user;
 </script>
 
 <p>Sweet, good job.</p>
@@ -37,11 +40,36 @@
   Like <a href="https://en.wikipedia.org/wiki/Claudette_Colvin">Claudette Colvin</a>, who only
   <strong>25%</strong> of readers knew.
 </p>
-<p>
-  Or <a href="https://en.wikipedia.org/wiki/Huey_P._Newton">Huey P. Newton</a>, since you're in
-  <strong>Oakland, California</strong> (he lived there). <strong>55%</strong> of readers recognized him.
-</p>
-<div>[maybe plot these lesser-known people on the same chart above]</div>
+
+{#if user === "michelle"}
+  <p>
+    Or <a href="https://en.wikipedia.org/wiki/Huey_P._Newton">Huey P. Newton</a>, since you're in
+    <strong>Oakland, California</strong> (he lived there). <strong>55%</strong> of readers recognized
+    him.
+  </p>
+{:else if user === "matt"}
+  <p>
+    Or <a href="https://en.wikipedia.org/wiki/Thornton_Blackburn">Thornton Blackburn</a>, since
+    you're in
+    <strong>Detroit, Michigan</strong> (he lived there). <strong>8%</strong> of readers recognized him.
+  </p>
+{:else if user === "russell"}
+  <p>
+    Or <a href="https://en.wikipedia.org/wiki/Huey_P._Newton">W.E.B. Du Bois</a>, since you're in
+    <strong>Great Barrington, Massachussets</strong> (he's from there). <strong>85%</strong> of readers
+    recognized him.
+  </p>
+{:else if user === "rob"}
+  <p>
+    Or <a href="https://en.wikipedia.org/wiki/Shirley_Chisholm">Shirley Chisholm</a>, since you're
+    in
+    <strong>Brooklyn, New York</strong> (she's from there). <strong>65%</strong> of readers recognized
+    her.
+  </p>
+{/if}
+
+<div>[maybe plot these lesser-known people on the same chart above?]</div>
+<div>[calling out the people who were in your survey visually]</div>
 <div>[then you can explore it and hover over other people]</div>
 
 <style>

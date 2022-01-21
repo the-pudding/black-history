@@ -4,6 +4,7 @@
   import Footer from "$components/Footer.svelte";
 
   let quizFinished = false;
+  let user = null;
 </script>
 
 <div class="container">
@@ -16,10 +17,19 @@
     about them.
   </p>
 
+  <div class="personalize">
+    <p>Who are you? (so i can do some fake personalization)</p>
+    <button on:click={() => (user = "matt")}>Matt</button>
+    <button on:click={() => (user = "russell")}>Russell</button>
+    <button on:click={() => (user = "rob")}>Rob</button>
+    <button on:click={() => (user = "michelle")}>Michelle</button>
+    {#if user}<p>thank you!</p>{/if}
+  </div>
+
   <Quiz bind:isFinished={quizFinished} />
 
   {#if quizFinished}
-    <Story />
+    <Story {user} />
     <p>Thanks for reading, hope you learned about someone new.</p>
   {/if}
 </div>
@@ -27,6 +37,12 @@
 <Footer />
 
 <style>
+  button {
+    background: lightblue;
+  }
+  .personalize {
+    margin-bottom: 1.5em;
+  }
   .container {
     width: 500px;
     margin: auto;
