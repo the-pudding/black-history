@@ -5,16 +5,21 @@
   export let isFinished;
 
   let isStarted = false;
-  let multipleChoice = false;
+  let stage = 0; // stage 0: recognition, stage 1: multiple choice, stage 2: next
   let index = 0;
   let results = [];
   let randomizedQuestions = _.shuffle(questions);
   $: ({ name, question, answerA, answerB, answerC } = randomizedQuestions[index]);
   $: answerOptions = _.shuffle([answerA, answerB, answerC]);
+  let currentMultipleChoiceResult = false;
 
   const logRecognition = (response) => {
     results = [...results, { name, recognized: response }];
-    multipleChoice = true;
+    if (response) {
+      stage = 1;
+    } else {
+      advance();
+    }
   };
   const logMultipleChoice = (e) => {
     const correctAnswer = answerA;
@@ -25,9 +30,18 @@
       { ...existingEntry, multipleChoice: e.target.innerText === correctAnswer }
     ];
 
-    multipleChoice = false;
+    currentMultipleChoiceResult = e.target.innerText === correctAnswer;
+    stage = 2;
+  };
+  const advance = () => {
     index += 1;
-    if (index >= questions.length - 1) isFinished = true;
+    console.log({ index });
+    if (index >= questions.length) {
+      isFinished = true;
+      index = 0;
+    } else {
+      stage = 0;
+    }
   };
 
   $: console.log({ results });
@@ -39,16 +53,22 @@
   <div>
     <p>{index + 1}/{questions.length}: Do you know who this is?</p>
     <p class="name"><strong>{name}</strong></p>
-    <button on:click={() => logRecognition(true)} disabled={multipleChoice}>👍🏾</button>
-    <button on:click={() => logRecognition(false)} disabled={multipleChoice}>👎🏾</button>
+    <button on:click={() => logRecognition(true)} disabled={stage > 0}>👍🏾</button>
+    <button on:click={() => logRecognition(false)} disabled={stage > 0}>👎🏾</button>
   </div>
 
-  {#if multipleChoice}
+  {#if stage > 0}
     <div>
       <p>{question}?</p>
       {#each answerOptions as option}
-        <button on:click={logMultipleChoice}>{option}</button>
+        <button on:click={logMultipleChoice} disabled={stage > 1}>{option}</button>
       {/each}
+      {#if stage === 2}
+        <div class="results">
+          <p>{currentMultipleChoiceResult ? "correct! 🎉" : "incorrect ❌"}</p>
+          <button on:click={advance}>next</button>
+        </div>
+      {/if}
     </div>
   {/if}
 {:else}
@@ -62,5 +82,13 @@
   }
   .name {
     font-size: 2em;
+  }
+  .results {
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+    height: 36px;
+    align-items: center;
+    margin-top: 1.5em;
   }
 </style>
