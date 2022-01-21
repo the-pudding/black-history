@@ -1,49 +1,34 @@
 <script>
-  import * as d3 from "d3";
-  import Person from "$components/Person.svelte";
+  import Quiz from "$components/Quiz.svelte";
+  import Story from "$components/Story.svelte";
   import Footer from "$components/Footer.svelte";
-  import views from "$data/views.csv";
-  import _ from "lodash";
 
-  let sortBy = "yearlyTotal";
-  $: data = sortData(sortBy);
-
-  const sortData = (metric) => {
-    return _.orderBy(views, (d) => parseFloat(d[metric]), "desc");
-  };
-
-  const getLineData = (raw) => {
-    let timeParser = d3.timeParse("%m-%d");
-    const justDates = _.omit(raw, ["yearlyTotal", "percentFebruary", "name", "februaryViews"]);
-    const arr = _.keys(justDates).map((key) => ({
-      date: timeParser(key),
-      views: parseFloat(raw[key])
-    }));
-    return arr;
-  };
+  let quizFinished = false;
 </script>
 
-<button on:click={() => (sortBy = "yearlyTotal")}>sort by yearly total</button>
-<button on:click={() => (sortBy = "percentFebruary")}>sort by % february</button>
-<button on:click={() => (sortBy = "februaryViews")}>sort by february views</button>
+<div class="container">
+  <p>
+    It's Black History Month (or at least it was when this was published)! We're going to see how
+    many famous Black Americans you know.
+  </p>
+  <p>
+    We'll show you a name, see if you recognize it, and then if you can answer a basic question
+    about them.
+  </p>
 
-<div>
-  {#each data as d, i}
-    <Person
-      {i}
-      name={d.name}
-      yearlyTotal={parseInt(d.yearlyTotal).toLocaleString()}
-      percentFebruary={parseInt(d.percentFebruary)}
-      lineData={getLineData(d)}
-    />
-  {/each}
+  <Quiz bind:isFinished={quizFinished} />
+
+  {#if quizFinished}
+    <Story />
+    <p>Thanks for reading, hope you learned about someone new.</p>
+  {/if}
 </div>
 
 <Footer />
 
 <style>
-  div {
-    display: flex;
-    flex-wrap: wrap;
+  .container {
+    width: 500px;
+    margin: auto;
   }
 </style>
