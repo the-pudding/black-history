@@ -1,14 +1,15 @@
 <script>
   import _ from "lodash";
-  import questions from "$data/questions.csv";
 
+  export let data;
   export let isFinished;
 
   let isStarted = false;
   let stage = 0; // stage 0: recognition, stage 1: multiple choice, stage 2: next
   let index = 0;
   let results = [];
-  let randomizedQuestions = _.shuffle(questions);
+  let numQuestions = 5;
+  let randomizedQuestions = _.shuffle(data).slice(0, numQuestions);
   $: ({ name, question, answerA, answerB, answerC } = randomizedQuestions[index]);
   $: answerOptions = _.shuffle([answerA, answerB, answerC]);
   let currentMultipleChoiceResult = false;
@@ -36,7 +37,7 @@
   const advance = () => {
     index += 1;
     console.log({ index });
-    if (index >= questions.length) {
+    if (index >= randomizedQuestions.length) {
       isFinished = true;
       index = 0;
     } else {
@@ -51,7 +52,7 @@
   <br />
 {:else if isStarted}
   <div>
-    <p>{index + 1}/{questions.length}: Do you know who this is?</p>
+    <p>{index + 1}/{randomizedQuestions.length}: Do you know who this is?</p>
     <p class="name"><strong>{name}</strong></p>
     <button on:click={() => logRecognition(true)} disabled={stage > 0}>👍🏾</button>
     <button on:click={() => logRecognition(false)} disabled={stage > 0}>👎🏾</button>
